@@ -23,12 +23,9 @@ export const DataProvider = ({ sessionId, children }: IProviderProps) => {
 	useEffect(() => {
 		fetchSessionById(sessionId).then((session) => setSession(session));
 
-		// setupWebSocketFetchQuestions(() => {
-		// 	sendJsonMessage({
-		// 		action: "fetchQuestions",
-		// 		sessionId,
-		// 	});
-		// });
+		setupWebSocketFetchQuestions(() => {
+			sendJsonMessage({ action: "ping" });
+		});
 	}, [sendJsonMessage, sessionId]);
 
 	useEffect(() => {
