@@ -1,50 +1,55 @@
 import { useState, useEffect, Children, cloneElement } from "react";
+import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 import { fetchSessionById } from "../../Api/Session";
 import { ISession } from "../../Api/Session/interfaces";
-import { setupWebSocketFetchQuestions, WEBSOCKET_URL } from "../../Api/websocket";
+import {
+  setupWebSocketFetchQuestions,
+  WEBSOCKET_URL,
+} from "../../Api/websocket";
 
 interface IProviderProps {
-	sessionId: string;
-	children: JSX.Element[];
+  children: JSX.Element[];
 }
 
-export const DataProvider = ({ sessionId, children }: IProviderProps) => {
-	const [session, setSession] = useState<ISession>();
+export const DataProvider = ({ children }: IProviderProps) => {
+  const { sessionId = "" } = useParams();
 
-	const { sendJsonMessage, lastJsonMessage } = useWebSocket(
-		`${WEBSOCKET_URL}?sessionId=${sessionId}`,
-		{
-			onOpen: () => console.log("opened"),
-			shouldReconnect: () => true,
-		}
-	);
+  const [session, setSession] = useState<ISession | null>();
 
-	useEffect(() => {
-		fetchSessionById(sessionId).then((session) => setSession(session));
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(
+    `${WEBSOCKET_URL}?sessionId=${sessionId}`,
+    {
+      onOpen: () => console.log("opened"),
+      shouldReconnect: () => true,
+    }
+  );
 
-		setupWebSocketFetchQuestions(() => {
-			sendJsonMessage({ action: "ping" });
-		});
-	}, [sendJsonMessage, sessionId]);
+  useEffect(() => {
+    fetchSessionById(sessionId).then((session) => setSession(session));
 
-	useEffect(() => {
-		if (lastJsonMessage?.Items?.[0]) {
-			setSession(lastJsonMessage.Items[0]);
-		}
-	}, [lastJsonMessage]);
+    setupWebSocketFetchQuestions(() => {
+      sendJsonMessage({ action: "ping" });
+    });
+  }, [sendJsonMessage, sessionId]);
 
-	console.log("lastJsonMessage", lastJsonMessage);
+  useEffect(() => {
+    if (lastJsonMessage?.Items?.[0]) {
+      setSession(lastJsonMessage.Items[0]);
+    }
+  }, [lastJsonMessage]);
 
-	return (
-		<>
-			{Children.map(children, (child) =>
-				cloneElement(child, {
-					session,
-					lastJsonMessage,
-					sendJsonMessage,
-				})
-			)}
-		</>
-	);
+  console.log("lastJsonMessage", lastJsonMessage);
+
+  return (
+    <>
+      {Children.map(children, (child) =>
+        cloneElement(child, {
+          session,
+          lastJsonMessage,
+          sendJsonMessage,
+        })
+      )}
+    </>
+  );
 };
