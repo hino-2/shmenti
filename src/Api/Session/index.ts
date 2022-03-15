@@ -1,4 +1,5 @@
 import axios from "axios";
+import { calcNewSessionId } from "../../helpers";
 import {
   headers,
   QUESTIONS_TABLE_NAME,
@@ -50,6 +51,7 @@ export const fetchSessionById = async (
       text: question.text.S,
       isAnswered: question.isAnswered.BOOL,
       timestamp: question.timestamp.N,
+      sessionId: session.id.N,
     })),
   };
 };
@@ -84,11 +86,7 @@ export const fetchSessionsList = async (): Promise<ISession[]> => {
 export const addSession = async (newSession: Omit<ISession, "id">) => {
   const sessions = await fetchSessionsList();
 
-  const newSessionId =
-    sessions.reduce(
-      (acc, session) => (Number(session.id) > acc ? Number(session.id) : acc),
-      0
-    ) + 1;
+  const newSessionId = calcNewSessionId(sessions);
 
   return axios.post(
     `${REST_API_URL}/session/add`,

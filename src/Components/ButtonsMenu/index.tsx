@@ -1,4 +1,4 @@
-import { ButtonAddQuestion } from "../ButtonAddQuestion";
+import { ButtonAddQuestion } from "../AddQuestion";
 import { ButtonHome } from "../ButtonHome";
 import { MenuContainer } from "./styled";
 

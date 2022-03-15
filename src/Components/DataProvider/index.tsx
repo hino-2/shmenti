@@ -20,7 +20,7 @@ export const DataProvider = ({ children }: IProviderProps) => {
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(
     `${WEBSOCKET_URL}?sessionId=${sessionId}`,
     {
-      onOpen: () => console.log("opened"),
+      onOpen: () => console.log("Websocket opened"),
       shouldReconnect: () => true,
     }
   );
@@ -38,8 +38,6 @@ export const DataProvider = ({ children }: IProviderProps) => {
       setSession(lastJsonMessage.Items[0]);
     }
   }, [lastJsonMessage]);
-
-  console.log("lastJsonMessage", lastJsonMessage);
 
   return (
     <>

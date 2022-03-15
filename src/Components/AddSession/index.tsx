@@ -6,66 +6,39 @@ import {
   Button,
   DialogActions,
   Box,
+  Typography,
 } from "@mui/material";
 import DatePicker from "@mui/lab/DatePicker";
-import { ChangeEvent, useCallback, useState } from "react";
-import { AddSessionButton } from "./styled";
-import { addSession } from "../../Api/Session";
+import { AddSessionButton, GrayBox } from "./styled";
 import { LoadingButton } from "@mui/lab";
+import { ISession } from "../../Api/Session/interfaces";
+import { useAddSession } from "./hooks";
 
-export const AddSession = () => {
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [date, setDate] = useState(null);
+interface IAddSession {
+  setSessions: React.Dispatch<React.SetStateAction<ISession[]>>;
+}
 
-  const handleClickOpen = useCallback(() => {
-    setDialogOpened(true);
-    setName("");
-    setDate(null);
-    setLoading(false);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setDialogOpened(false);
-  }, []);
-
-  const handleAddSession = useCallback(() => {
-    if (name && date) {
-      setLoading(true);
-      addSession({
-        name,
-        date: new Date(date).toDateString(),
-      }).then(() => {
-        setDialogOpened(false);
-      });
-    }
-  }, [date, name]);
-
-  const handleDatePick = useCallback((newDate: any) => {
-    setDate(newDate);
-  }, []);
-
-  const handleNameChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setName(e.target.value);
-    },
-    []
-  );
+export const AddSession = ({ setSessions }: IAddSession) => {
+  const {
+    date,
+    name,
+    dialogOpened,
+    loading,
+    handleClickOpen,
+    handleClose,
+    handleAddSession,
+    handleDatePick,
+    handleNameChange,
+  } = useAddSession(setSessions);
 
   return (
     <>
       <Dialog open={dialogOpened} onClose={handleClose}>
-        <DialogTitle>Add new session</DialogTitle>
+        <DialogTitle>
+          <Typography>Add new session</Typography>
+        </DialogTitle>
         <DialogContent>
-          <Box
-            sx={{
-              minWidth: 400,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
+          <GrayBox>
             <TextField
               value={name}
               autoFocus
@@ -84,20 +57,20 @@ export const AddSession = () => {
               onChange={handleDatePick}
               renderInput={(params: any) => <TextField {...params} />}
             />
-          </Box>
+          </GrayBox>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <LoadingButton
             loading={loading}
-            variant="contained"
+            variant="outlined"
             onClick={handleAddSession}
           >
             Add
           </LoadingButton>
         </DialogActions>
       </Dialog>
-      <AddSessionButton variant="contained" onClick={handleClickOpen}>
+      <AddSessionButton variant="outlined" onClick={handleClickOpen}>
         Add Session
       </AddSessionButton>
     </>

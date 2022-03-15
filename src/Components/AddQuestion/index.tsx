@@ -7,53 +7,28 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
+  Typography,
 } from "@mui/material";
-import { ChangeEvent, useCallback, useState } from "react";
-import { useParams } from "react-router-dom";
-import { addQuestion } from "../../Api/Questions";
+import { FASTDEV_FONT_FAMILY } from "../../Style/theme";
+import { useAddQuestion } from "./hooks";
 
 export const ButtonAddQuestion = () => {
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [questionText, setQuestionText] = useState("");
-
-  const { sessionId = "" } = useParams();
-
-  const handleClickOpen = useCallback(() => {
-    setDialogOpened(true);
-    setQuestionText("");
-    setLoading(false);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setDialogOpened(false);
-  }, []);
-
-  const handleNameChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setQuestionText(e.target.value);
-    },
-    []
-  );
-
-  const handleAddQuestion = useCallback(() => {
-    if (questionText) {
-      setLoading(true);
-      addQuestion({
-        sessionId,
-        text: questionText,
-        isAnswered: false,
-        timestamp: Date.now(),
-      }).then(() => {
-        setDialogOpened(false);
-      });
-    }
-  }, [questionText, sessionId]);
+  const {
+    questionText,
+    dialogOpened,
+    loading,
+    handleClickOpen,
+    handleClose,
+    handleNameChange,
+    handleAddQuestion,
+  } = useAddQuestion();
 
   return (
     <>
       <Dialog open={dialogOpened} onClose={handleClose}>
-        <DialogTitle>Add new session</DialogTitle>
+        <DialogTitle>
+          <Typography>Add new question</Typography>
+        </DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -73,6 +48,7 @@ export const ButtonAddQuestion = () => {
               type="text"
               fullWidth
               variant="standard"
+              sx={FASTDEV_FONT_FAMILY}
               onChange={handleNameChange}
             />
           </Box>
@@ -81,7 +57,7 @@ export const ButtonAddQuestion = () => {
           <Button onClick={handleClose}>Cancel</Button>
           <LoadingButton
             loading={loading}
-            variant="contained"
+            variant="outlined"
             onClick={handleAddQuestion}
           >
             Add
@@ -89,7 +65,7 @@ export const ButtonAddQuestion = () => {
         </DialogActions>
       </Dialog>
       <Button
-        variant="contained"
+        variant="outlined"
         sx={{ marginTop: 1 }}
         onClick={handleClickOpen}
       >

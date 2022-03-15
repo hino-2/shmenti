@@ -17,38 +17,62 @@ const QuestionsList = ({
   lastJsonMessage,
   sendJsonMessage,
 }: IQuestionsListProps) => {
-  const [stateQuestions, setQuestions] = useState<IQuestion[]>();
+  const [stateQuestions, setQuestions] = useState<IQuestion[]>([]);
 
   useEffect(() => {
-    if (session) {
-      setQuestions(session.questions ?? []);
-    }
+    setQuestions(session?.questions ?? []);
   }, [session]);
 
-  const onClickCheckListItem = useCallback(
-    (timestamp: number) =>
-      (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        // if (sendJsonMessage) {
-        // 	sendJsonMessage({
-        // 		action: "fetchQuestions",
-        // 		sessionId: session?.id,
-        // 	});
-        // }
+  useEffect(() => {
+    if (lastJsonMessage?.type === "newQuestion" && lastJsonMessage.payload) {
+      const isExists = stateQuestions.find(
+        (sq) => sq.id === lastJsonMessage.payload.id.N
+      );
 
-        setQuestions(
-          (stateQuestions ?? []).map((question) => {
-            return question.timestamp === timestamp
-              ? { ...question, isAnswered: !question.isAnswered }
-              : question;
-          })
-        );
-      },
-    [stateQuestions]
+      if (!isExists) {
+        setQuestions([
+          ...stateQuestions,
+          {
+            id: lastJsonMessage.payload.id.N,
+            text: lastJsonMessage.payload.text.S,
+            isAnswered: lastJsonMessage.payload.isAnswered.BOOL,
+            timestamp: lastJsonMessage.payload.timestamp.N,
+            sessionId: lastJsonMessage.payload.sessionId.S,
+          },
+        ]);
+      }
+    }
+  }, [lastJsonMessage, stateQuestions]);
+
+  const onClickCheckListItem = useCallback(
+    (timestamp: number) => () => {
+      if (sendJsonMessage) {
+        const sq = stateQuestions.find((sq) => sq.timestamp === timestamp);
+
+        if (sq) {
+          const updatedQuestion = { ...sq, isAnswered: !sq?.isAnswered };
+
+          sendJsonMessage({
+            action: "updateQuestion",
+            payload: updatedQuestion,
+          });
+        }
+      }
+
+      setQuestions(
+        stateQuestions.map((question) => {
+          return question.timestamp === timestamp
+            ? { ...question, isAnswered: !question.isAnswered }
+            : question;
+        })
+      );
+    },
+    [sendJsonMessage, stateQuestions]
   );
 
   return (
     <QuestionsListContainer>
-      {(stateQuestions ?? []).map((question, index) => (
+      {stateQuestions.map((question, index) => (
         <React.Fragment key={question.timestamp}>
           <QuestionsListItem
             question={question}

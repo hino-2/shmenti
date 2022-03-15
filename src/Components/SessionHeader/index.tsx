@@ -22,6 +22,7 @@ export const SessionHeader = ({ session }: ISessionHeaderProps) =>
         align="center"
         gutterBottom
         component="div"
+        color="secondary"
       >
         {session?.date ? new Date(session.date).toLocaleDateString() : <></>}
       </Typography>

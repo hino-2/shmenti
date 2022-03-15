@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchSessionsList } from "../../Api/Session";
 import { ISession } from "../../Api/Session/interfaces";
 import { QuestionsListContainer } from "../QuestionsList/styled";
-import { SessionButton } from "./styled";
+import { SessionButton, StyledLink } from "./styled";
 import { Typography } from "@mui/material";
 import { AddSession } from "../AddSession";
 
@@ -12,7 +11,7 @@ export const Homepage = () => {
 
   useEffect(() => {
     fetchSessionsList().then((sessions) => {
-      if (sessions.length) {
+      if (sessions?.length) {
         setSessions(sessions);
       }
     });
@@ -25,21 +24,17 @@ export const Homepage = () => {
           Choose session
         </Typography>
         {sessions.map((session) => (
-          <Link
-            to={`${session.id}`}
-            key={session.id}
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              textDecoration: "none",
-            }}
-          >
-            <SessionButton variant="outlined">{session.name}</SessionButton>
-          </Link>
+          <StyledLink to={`${session.id}`} key={session.id}>
+            <SessionButton variant="outlined">
+              {session.name}&nbsp;
+              <Typography variant="body2" color="secondary">
+                ({session.date})
+              </Typography>
+            </SessionButton>
+          </StyledLink>
         ))}
       </QuestionsListContainer>
-      <AddSession />
+      <AddSession setSessions={setSessions} />
     </>
   );
 };

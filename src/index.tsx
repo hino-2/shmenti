@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import React from "react";
@@ -10,14 +10,8 @@ import { SessionHeader } from "./Components/SessionHeader";
 import { DataProvider } from "./Components/DataProvider";
 import { Homepage } from "./Components/Homepage";
 import { ButtonsMenu } from "./Components/ButtonsMenu";
-
-const theme = createTheme({
-  palette: {
-    secondary: {
-      main: "##1de9b6",
-    },
-  },
-});
+import { theme } from "./Style/theme";
+import { Footer } from "./Components/Footer";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -38,6 +32,7 @@ ReactDOM.render(
             />
           </Routes>
         </BrowserRouter>
+        <Footer />
       </LocalizationProvider>
     </ThemeProvider>
   </React.StrictMode>,

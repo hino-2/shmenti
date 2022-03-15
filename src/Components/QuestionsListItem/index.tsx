@@ -5,36 +5,39 @@ import ListItemText from "@mui/material/ListItemText";
 import {
   StyledButton,
   answeredQuestionStyle,
-  getNotAnsweredQuestionStyle,
+  notAnsweredQuestionStyle,
 } from "./styled";
+import { Typography } from "@mui/material";
 
 interface ListItemProps {
   question: IQuestion;
   onClickCheckListItem: (
-    itemId: number
+    timestamp: number
   ) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const QuestionsListItem = ({
   question,
   onClickCheckListItem,
-}: ListItemProps) => {
-  return (
-    <StyledButton
-      variant="outlined"
-      style={
-        question.isAnswered
-          ? answeredQuestionStyle
-          : getNotAnsweredQuestionStyle()
-      }
-      onClick={onClickCheckListItem(question.timestamp)}
-      endIcon={
-        question.isAnswered ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
-      }
-    >
-      <ListItemText primary={question.text} />
-    </StyledButton>
-  );
-};
+}: ListItemProps) => (
+  <StyledButton
+    variant="outlined"
+    sx={question.isAnswered ? answeredQuestionStyle : notAnsweredQuestionStyle}
+    onClick={onClickCheckListItem(question.timestamp)}
+    endIcon={
+      question.isAnswered ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
+    }
+  >
+    <ListItemText>
+      <Typography
+        sx={
+          question.isAnswered ? answeredQuestionStyle : notAnsweredQuestionStyle
+        }
+      >
+        {question.text}
+      </Typography>
+    </ListItemText>
+  </StyledButton>
+);
 
 export default QuestionsListItem;
