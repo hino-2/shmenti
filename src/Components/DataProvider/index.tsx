@@ -1,11 +1,10 @@
 import { useState, useEffect, Children, cloneElement } from "react";
 import { useParams } from "react-router-dom";
-import useWebSocket from "react-use-websocket";
 import { fetchSessionById } from "../../Api/Session";
 import { ISession } from "../../Api/Session/interfaces";
 import {
-  setupWebSocketFetchQuestions,
-  WEBSOCKET_URL,
+  // setupWebSocketFetchQuestions,
+  useWebsocket,
 } from "../../Api/websocket";
 
 interface IProviderProps {
@@ -17,20 +16,14 @@ export const DataProvider = ({ children }: IProviderProps) => {
 
   const [session, setSession] = useState<ISession | null>();
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(
-    `${WEBSOCKET_URL}?sessionId=${sessionId}`,
-    {
-      onOpen: () => console.log("Websocket opened"),
-      shouldReconnect: () => true,
-    }
-  );
+  const { sendJsonMessage, lastJsonMessage } = useWebsocket(sessionId);
 
   useEffect(() => {
     fetchSessionById(sessionId).then((session) => setSession(session));
 
-    setupWebSocketFetchQuestions(() => {
-      sendJsonMessage({ action: "ping" });
-    });
+    // setupWebSocketFetchQuestions(() => {
+    //   sendJsonMessage({ action: "ping" });
+    // });
   }, [sendJsonMessage, sessionId]);
 
   useEffect(() => {

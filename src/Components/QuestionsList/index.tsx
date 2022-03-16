@@ -7,6 +7,7 @@ import QuestionsListItem from "../QuestionsListItem";
 import { QuestionsListContainer } from "./styled";
 import { ISession } from "../../Api/Session/interfaces";
 import { IWebSocketProps } from "../../Api/websocket";
+import { updateQuestions } from "./updates";
 
 interface IQuestionsListProps extends IWebSocketProps {
   session?: ISession;
@@ -24,25 +25,9 @@ const QuestionsList = ({
   }, [session]);
 
   useEffect(() => {
-    if (lastJsonMessage?.type === "newQuestion" && lastJsonMessage.payload) {
-      const isExists = stateQuestions.find(
-        (sq) => sq.id === lastJsonMessage.payload.id.N
-      );
-
-      if (!isExists) {
-        setQuestions([
-          ...stateQuestions,
-          {
-            id: lastJsonMessage.payload.id.N,
-            text: lastJsonMessage.payload.text.S,
-            isAnswered: lastJsonMessage.payload.isAnswered.BOOL,
-            timestamp: lastJsonMessage.payload.timestamp.N,
-            sessionId: lastJsonMessage.payload.sessionId.S,
-          },
-        ]);
-      }
-    }
-  }, [lastJsonMessage, stateQuestions]);
+    updateQuestions(stateQuestions, setQuestions, lastJsonMessage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastJsonMessage]);
 
   const onClickCheckListItem = useCallback(
     (timestamp: number) => () => {
