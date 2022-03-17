@@ -8,3 +8,6 @@ export const calcNewSessionId = (sessions: ISession[]) =>
     (acc, session) => (Number(session.id) > acc ? Number(session.id) : acc),
     0
   ) + 1;
+
+export const sessionsByDate = (a: ISession, b: ISession) =>
+  new Date(b.date).getTime() - new Date(a.date).getTime();

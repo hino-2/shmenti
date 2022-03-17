@@ -11,6 +11,7 @@ import { ISession } from "../../Api/Session/interfaces";
 import {
   CircularProgressContainer,
   GoButton,
+  HeaderContainer,
   HeaderText,
   HomePageContainer,
   RecentSessionsContainer,
@@ -22,6 +23,7 @@ import {
 } from "./styled";
 import { CircularProgress, Typography } from "@mui/material";
 import { AddSession } from "../AddSession";
+import { sessionsByDate } from "../../helpers";
 
 export const Homepage = () => {
   const [sessions, setSessions] = useState<ISession[]>();
@@ -31,7 +33,7 @@ export const Homepage = () => {
 
   useEffect(() => {
     fetchSessionsList().then((sessions) => {
-      setSessions(sessions?.length ? sessions : []);
+      setSessions(sessions?.length ? sessions.sort(sessionsByDate) : []);
     });
   }, []);
 
@@ -58,9 +60,16 @@ export const Homepage = () => {
   return (
     <>
       <HomePageContainer>
-        <HeaderText variant="h2" color="primary">
-          Shmenti
-        </HeaderText>
+        <HeaderContainer>
+          <img
+            src="https://shmenti.s3.eu-central-1.amazonaws.com/favicon.png"
+            alt="logo"
+            height={76}
+          />
+          <HeaderText variant="h2" color="primary">
+            Shmenti
+          </HeaderText>
+        </HeaderContainer>
         <SubHeaderText>Please enter the code</SubHeaderText>
         <StyledTextField
           value={sessionId}

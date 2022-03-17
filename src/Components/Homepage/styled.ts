@@ -25,9 +25,15 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
+export const HeaderContainer = styled(Box)({
+  display: "flex",
+  marginTop: 20,
+  marginBottom: 20,
+});
+
 export const HeaderText = styled(Typography)`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 2px;
+  margin-left: 10px;
 `;
 
 export const SubHeaderText = styled(Typography)`
