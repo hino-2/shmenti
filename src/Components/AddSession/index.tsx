@@ -15,7 +15,7 @@ import { ISession } from "../../Api/Session/interfaces";
 import { useAddSession } from "./hooks";
 
 interface IAddSession {
-  setSessions: React.Dispatch<React.SetStateAction<ISession[]>>;
+  setSessions: React.Dispatch<React.SetStateAction<ISession[] | undefined>>;
 }
 
 export const AddSession = ({ setSessions }: IAddSession) => {

@@ -7,29 +7,23 @@ export const WEBSOCKET_URL =
 export enum WSMessageTypes {
   newQuestion = "newQuestion",
   updateQuestion = "updateQuestion",
+  ping = "ping",
 }
-
-// const FIVE_MINUTES = 1000 * 60 * 5;
 
 export interface IWebSocketProps {
   sendJsonMessage?: SendJsonMessage;
   lastJsonMessage?: any;
 }
 
-// export const setupWebSocketFetchQuestions = (cb: () => void, interval = FIVE_MINUTES) => {
-// 	setInterval(cb, interval);
-// };
-
 export const useWebsocket = (sessionId: string) => {
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(
     `${WEBSOCKET_URL}?sessionId=${sessionId}`,
     {
       onMessage: (event: MessageEvent) => {
-        console.log(event);
         try {
           const messageData = JSON.parse(event.data);
 
-          if (messageData.type === "ping") {
+          if (messageData.type === WSMessageTypes.ping) {
             sendJsonMessage({ action: "pong" });
           }
         } catch (error) {
@@ -38,7 +32,6 @@ export const useWebsocket = (sessionId: string) => {
           );
         }
       },
-      onOpen: () => console.log("Websocket opened"),
       shouldReconnect: () => true,
     }
   );

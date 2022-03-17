@@ -4,7 +4,7 @@ import { ISession } from "../../Api/Session/interfaces";
 import { calcNewSessionId } from "../../helpers";
 
 export const useAddSession = (
-  setSessions: React.Dispatch<React.SetStateAction<ISession[]>>
+  setSessions: React.Dispatch<React.SetStateAction<ISession[] | undefined>>
 ) => {
   const [dialogOpened, setDialogOpened] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,15 +31,19 @@ export const useAddSession = (
         date: new Date(date).toDateString(),
       }).then(() => {
         setSessions((prev) => {
-          const sessions = [...prev];
+          if (prev) {
+            const sessions = [...prev];
 
-          sessions.unshift({
-            id: calcNewSessionId(sessions),
-            name,
-            date: new Date(date).toDateString(),
-          });
+            sessions.unshift({
+              id: calcNewSessionId(sessions),
+              name,
+              date: new Date(date).toDateString(),
+            });
 
-          return sessions;
+            return sessions;
+          } else {
+            return prev;
+          }
         });
 
         setDialogOpened(false);

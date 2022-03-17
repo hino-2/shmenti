@@ -1,8 +1,9 @@
 import { createTheme } from "@mui/material";
 
+export const FASTDEV_COLOR_MAIN = "#16eab7";
 export const BACKGROUND_COLOR_GRAY = "#343434";
 export const FASTDEV_FONT_FAMILY = {
-  color: "#16eab7",
+  color: FASTDEV_COLOR_MAIN,
   fontWeight: 700,
   lineHeight: 1.2,
   fontSize: "1.25rem",
@@ -62,7 +63,7 @@ export const theme = createTheme({
         },
       },
     },
-    MuiInput: {
+    MuiInputBase: {
       styleOverrides: {
         root: {
           color: FASTDEV_FONT_FAMILY.color,
