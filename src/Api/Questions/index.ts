@@ -11,8 +11,9 @@ export const addQuestion = async (question: IQuestion) => {
         id: { N: String(question.timestamp) },
         sessionId: { S: String(question.sessionId) },
         text: { S: question.text },
-        isAnswered: { BOOL: question.isAnswered },
+        isAnswered: { BOOL: false },
         timestamp: { N: String(question.timestamp) },
+        likes: { N: "0" },
       },
     },
     { headers }

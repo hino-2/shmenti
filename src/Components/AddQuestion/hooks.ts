@@ -35,8 +35,9 @@ export const useAddQuestion = () => {
         sessionId,
         text: questionText,
         isAnswered: false,
-        id: String(id),
+        id: Number(id),
         timestamp: id,
+        likes: 0,
       }).then(() => {
         setDialogOpened(false);
       });

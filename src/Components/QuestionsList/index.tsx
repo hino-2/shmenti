@@ -1,8 +1,6 @@
-import { Divider } from "@mui/material";
 import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { IQuestion } from "../../Api/Questions/interfaces";
-import { isLastItem } from "../../helpers";
 import QuestionsListItem from "../QuestionsListItem";
 import { QuestionsListContainer } from "./styled";
 import { ISession } from "../../Api/Session/interfaces";
@@ -29,7 +27,7 @@ const QuestionsList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastJsonMessage]);
 
-  const onClickCheckListItem = useCallback(
+  const onClickListItem = useCallback(
     (timestamp: number) => () => {
       if (sendJsonMessage) {
         const sq = stateQuestions.find((sq) => sq.timestamp === timestamp);
@@ -57,17 +55,13 @@ const QuestionsList = ({
 
   return (
     <QuestionsListContainer>
-      {stateQuestions.map((question, index) => (
+      {stateQuestions.map((question) => (
         <React.Fragment key={question.timestamp}>
           <QuestionsListItem
             question={question}
-            onClickCheckListItem={onClickCheckListItem}
+            onClickListItem={onClickListItem}
+            sendJsonMessage={sendJsonMessage}
           />
-          {!isLastItem(index, stateQuestions?.length ?? 0) ? (
-            <Divider style={{ width: "75%" }} />
-          ) : (
-            <></>
-          )}
         </React.Fragment>
       ))}
     </QuestionsListContainer>

@@ -11,18 +11,19 @@ export const updateQuestions = (
     lastJsonMessage.payload
   ) {
     const isExists = stateQuestions.find(
-      (sq) => sq.id === lastJsonMessage.payload.id.N
+      (sq) => sq.id === Number(lastJsonMessage.payload.id.N)
     );
 
     if (!isExists) {
       setQuestions([
         ...stateQuestions,
         {
-          id: lastJsonMessage.payload.id.N,
+          id: Number(lastJsonMessage.payload.id.N),
           text: lastJsonMessage.payload.text.S,
           isAnswered: lastJsonMessage.payload.isAnswered.BOOL,
-          timestamp: lastJsonMessage.payload.timestamp.N,
+          timestamp: Number(lastJsonMessage.payload.timestamp.N),
           sessionId: lastJsonMessage.payload.sessionId.S,
+          likes: Number(lastJsonMessage.payload.likes.N),
         },
       ]);
     }
@@ -33,13 +34,14 @@ export const updateQuestions = (
     lastJsonMessage.payload
   ) {
     const updatedQuestions = stateQuestions.map((sq) =>
-      sq.id === lastJsonMessage.payload.id.N
+      sq.id === Number(lastJsonMessage.payload.id.N)
         ? {
-            id: lastJsonMessage.payload.id.N,
+            id: Number(lastJsonMessage.payload.id.N),
             text: lastJsonMessage.payload.text.S,
             isAnswered: lastJsonMessage.payload.isAnswered.BOOL,
-            timestamp: lastJsonMessage.payload.timestamp.N,
+            timestamp: Number(lastJsonMessage.payload.timestamp.N),
             sessionId: lastJsonMessage.payload.sessionId.S,
+            likes: Number(lastJsonMessage.payload.likes.N),
           }
         : sq
     );
