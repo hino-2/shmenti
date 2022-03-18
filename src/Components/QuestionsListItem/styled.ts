@@ -2,34 +2,37 @@ import { Badge, Box, Button, styled } from "@mui/material";
 import { IQuestion } from "../../Api/Questions/interfaces";
 
 export const ListItemContainer = styled(Box)`
-  display: flex;
-  width: 100%;
-  justify-content: center;
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
 `;
 
-export const StyledButton = styled(Button)`
-  max-width: 65%;
-  width: 100%;
-  height: unset;
-  margin: 5px;
-  text-transform: none;
+export const StyledQuestionButton = styled(Button)`
+	max-width: 65%;
+	width: 100%;
+	height: unset;
+	margin: 5px;
+	text-transform: none;
 `;
 
 export const StyledBadge = styled(Badge)({
-  width: 40,
-  height: 40,
-  marginTop: "13px",
-  cursor: "pointer",
+	cursor: "pointer",
+});
+
+export const StyledLikeButton = styled(Button)({
+	width: "50px",
+	minWidth: "unset",
 });
 
 const answeredQuestionStyle = {
-  // border: 0,
-  color: "#16eab733",
+	// border: 0,
+	color: "#16eab733",
 };
 
 const notAnsweredQuestionStyle = {
-  // borderWidth: 0,
+	// borderWidth: 0,
 };
 
 export const getStylesByIsAnswered = (question: IQuestion) =>
-  question.isAnswered ? answeredQuestionStyle : notAnsweredQuestionStyle;
+	question.isAnswered ? answeredQuestionStyle : notAnsweredQuestionStyle;

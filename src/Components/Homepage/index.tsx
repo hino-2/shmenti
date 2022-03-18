@@ -15,9 +15,18 @@ import {
 	StyledTextField,
 	SubHeaderText,
 } from "./styled";
-import { CircularProgress, Typography } from "@mui/material";
-import { AddSession } from "../AddSession";
+import { CircularProgress, SpeedDialAction, Typography } from "@mui/material";
+import SpeedDial, { SpeedDialProps } from "@mui/material/SpeedDial";
+import MenuIcon from "@mui/icons-material/Menu";
+import AddIcon from "@mui/icons-material/Add";
+import HomeIcon from "@mui/icons-material/Home";
+import { AddSession } from "../ButtonAddSession";
 import { insertSpaceInTheMiddle, sessionsByDate } from "../../helpers";
+
+const actions = [
+	{ icon: <HomeIcon />, name: "home" },
+	{ icon: <AddIcon />, name: "Add" },
+];
 
 export const Homepage = () => {
 	const [sessions, setSessions] = useState<ISession[]>();
@@ -60,6 +69,14 @@ export const Homepage = () => {
 		},
 		[handleGoButtonClick]
 	);
+
+	// const handleSpeedDialActionClick = useCallback((name: string) => () => {
+	// 	if(name === 'home') {
+	// 		navigate('/')
+	// 	}
+
+	// 	if()
+	// }, [navigate]);
 
 	return (
 		<>
@@ -104,6 +121,20 @@ export const Homepage = () => {
 					)}
 				</RecentSessionsContainer>
 			</HomePageContainer>
+			{/* <SpeedDial
+				ariaLabel="Menu"
+				icon={<MenuIcon />}
+				direction="down"
+				sx={{ position: "absolute", right: 10, top: 10 }}>
+				{actions.map(({ name, icon }) => (
+					<SpeedDialAction
+						onClick={handleSpeedDialActionClick(name)}
+						key={name}
+						icon={icon}
+						tooltipTitle={name}
+					/>
+				))}
+			</SpeedDial> */}
 			<AddSession setSessions={setSessions} />
 		</>
 	);

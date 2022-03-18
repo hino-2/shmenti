@@ -4,77 +4,78 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import ListItemText from "@mui/material/ListItemText";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import {
-  StyledButton,
-  ListItemContainer,
-  StyledBadge,
-  getStylesByIsAnswered,
+	StyledQuestionButton,
+	ListItemContainer,
+	StyledBadge,
+	getStylesByIsAnswered,
+	StyledLikeButton,
 } from "./styled";
 import { Typography } from "@mui/material";
-import { useCallback } from "react";
-import { IWebSocketProps } from "../../Api/websocket";
+import { useCallback, useEffect, useState } from "react";
+import { IWebSocketProps, WSMessageTypes } from "../../Api/websocket";
 import { getLikedQuestionsFromLocalStorage } from "../../helpers";
 
 interface ListItemProps {
-  question: IQuestion;
-  onClickListItem: (
-    timestamp: number
-  ) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  sendJsonMessage: IWebSocketProps["sendJsonMessage"];
+	question: IQuestion;
+	onClickListItem: (
+		timestamp: number
+	) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+	sendJsonMessage: IWebSocketProps["sendJsonMessage"];
 }
 
-const QuestionsListItem = ({
-  question,
-  onClickListItem,
-  sendJsonMessage,
-}: ListItemProps) => {
-  const likedQuestions = getLikedQuestionsFromLocalStorage();
+const QuestionsListItem = ({ question, onClickListItem, sendJsonMessage }: ListItemProps) => {
+	const [likesCount, setLikesCount] = useState(question?.likes ?? 0);
 
-  const handleBadgeClick = useCallback(() => {
-    let newLikesCount = 0;
+	const likedQuestions = getLikedQuestionsFromLocalStorage();
 
-    if (likedQuestions[question.id]) {
-      delete likedQuestions[question.id];
-      newLikesCount = question.likes > 0 ? question.likes - 1 : question.likes;
-    } else {
-      likedQuestions[question.id] = true;
-      newLikesCount = question.likes + 1;
-    }
+	useEffect(() => {
+		setLikesCount(question.likes);
+	}, [question.likes]);
 
-    localStorage.setItem("likedQuestions", JSON.stringify(likedQuestions));
+	const handleBadgeClick = useCallback(() => {
+		let newLikesCount = 0;
 
-    if (sendJsonMessage) {
-      sendJsonMessage({
-        action: "updateQuestion",
-        payload: { ...question, likes: newLikesCount },
-      });
-    }
-  }, [likedQuestions, question, sendJsonMessage]);
+		if (likedQuestions[question.id]) {
+			delete likedQuestions[question.id];
+			newLikesCount = likesCount > 0 ? likesCount - 1 : likesCount;
+		} else {
+			likedQuestions[question.id] = true;
+			newLikesCount = likesCount + 1;
+		}
 
-  return (
-    <ListItemContainer>
-      <StyledButton
-        variant="outlined"
-        sx={getStylesByIsAnswered(question)}
-        onClick={onClickListItem(question.timestamp)}
-        endIcon={
-          question.isAnswered ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />
-        }
-      >
-        <ListItemText>
-          <Typography sx={getStylesByIsAnswered(question)}>
-            {question.text}
-          </Typography>
-        </ListItemText>
-      </StyledButton>
-      <StyledBadge
-        badgeContent={String(question.likes)}
-        color={likedQuestions[question.id] ? "success" : "secondary"}
-        onClick={handleBadgeClick}
-      >
-        <ThumbUpAltIcon color="primary" fontSize="large" />
-      </StyledBadge>
-    </ListItemContainer>
-  );
+		setLikesCount(newLikesCount);
+
+		if (sendJsonMessage) {
+			sendJsonMessage({
+				action: WSMessageTypes.updateQuestion,
+				payload: { ...question, likes: newLikesCount },
+			});
+		}
+
+		localStorage.setItem("likedQuestions", JSON.stringify(likedQuestions));
+	}, [likedQuestions, likesCount, question, sendJsonMessage]);
+
+	return (
+		<ListItemContainer>
+			<StyledQuestionButton
+				variant="outlined"
+				sx={getStylesByIsAnswered(question)}
+				onClick={onClickListItem(question.timestamp)}
+				endIcon={question.isAnswered ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}>
+				<ListItemText>
+					<Typography sx={getStylesByIsAnswered(question)}>{question.text}</Typography>
+				</ListItemText>
+			</StyledQuestionButton>
+			<StyledBadge
+				badgeContent={String(likesCount)}
+				color={likedQuestions[question.id] ? "success" : "secondary"}
+				onClick={handleBadgeClick}>
+				<StyledLikeButton variant="text">
+					<ThumbUpAltIcon color="primary" fontSize="large" />
+				</StyledLikeButton>
+			</StyledBadge>
+		</ListItemContainer>
+	);
 };
 
 export default QuestionsListItem;
