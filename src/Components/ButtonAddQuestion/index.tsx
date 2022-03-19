@@ -13,7 +13,11 @@ import AddIcon from "@mui/icons-material/Add";
 import { FASTDEV_FONT_FAMILY } from "../../Style/theme";
 import { useAddQuestion } from "./hooks";
 
-export const ButtonAddQuestion = () => {
+interface IButtonAddQuestionProps {
+	sessionExists: boolean;
+}
+
+export const ButtonAddQuestion = ({ sessionExists }: IButtonAddQuestionProps) => {
 	const {
 		questionText,
 		dialogOpened,
@@ -60,12 +64,16 @@ export const ButtonAddQuestion = () => {
 					</LoadingButton>
 				</DialogActions>
 			</Dialog>
-			<Button
-				variant="outlined"
-				sx={{ marginTop: 1, minWidth: "unset" }}
-				onClick={handleClickOpen}>
-				<AddIcon />
-			</Button>
+			{sessionExists ? (
+				<Button
+					variant="outlined"
+					sx={{ marginTop: 1, minWidth: "unset" }}
+					onClick={handleClickOpen}>
+					<AddIcon />
+				</Button>
+			) : (
+				<></>
+			)}
 		</>
 	);
 };
