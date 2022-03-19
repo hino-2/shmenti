@@ -13,7 +13,7 @@ import {
 import { Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { IWebSocketProps, WSMessageTypes } from "../../Api/websocket";
-import { getLikedQuestionsFromLocalStorage } from "../../helpers";
+import { getIsLikedQuestion, setIsLikedQuestion, setIsNotLikedQuestion } from "../../helpers";
 
 interface ListItemProps {
 	question: IQuestion;
@@ -25,21 +25,32 @@ interface ListItemProps {
 
 const QuestionsListItem = ({ question, onClickListItem, sendJsonMessage }: ListItemProps) => {
 	const [likesCount, setLikesCount] = useState(question?.likes ?? 0);
+	const [isLikeButtonDisabled, setIsLikeButtonDisabled] = useState(false);
 
-	const likedQuestions = getLikedQuestionsFromLocalStorage();
+	const isLiked = getIsLikedQuestion(question.id);
 
 	useEffect(() => {
 		setLikesCount(question.likes);
 	}, [question.likes]);
 
-	const handleBadgeClick = useCallback(() => {
+	const doubleClickProtect = useCallback(() => {
+		setIsLikeButtonDisabled(true);
+
+		setTimeout(() => {
+			setIsLikeButtonDisabled(false);
+		}, 500);
+	}, []);
+
+	const handleLikeButtonClick = useCallback(() => {
+		doubleClickProtect();
+
 		let newLikesCount = 0;
 
-		if (likedQuestions[question.id]) {
-			delete likedQuestions[question.id];
-			newLikesCount = likesCount > 0 ? likesCount - 1 : likesCount;
+		if (isLiked) {
+			setIsNotLikedQuestion(question.id);
+			newLikesCount = Math.max(0, likesCount - 1);
 		} else {
-			likedQuestions[question.id] = true;
+			setIsLikedQuestion(question.id);
 			newLikesCount = likesCount + 1;
 		}
 
@@ -51,9 +62,7 @@ const QuestionsListItem = ({ question, onClickListItem, sendJsonMessage }: ListI
 				payload: { ...question, likes: newLikesCount },
 			});
 		}
-
-		localStorage.setItem("likedQuestions", JSON.stringify(likedQuestions));
-	}, [likedQuestions, likesCount, question, sendJsonMessage]);
+	}, [doubleClickProtect, isLiked, likesCount, question, sendJsonMessage]);
 
 	return (
 		<ListItemContainer>
@@ -68,9 +77,11 @@ const QuestionsListItem = ({ question, onClickListItem, sendJsonMessage }: ListI
 			</StyledQuestionButton>
 			<StyledBadge
 				badgeContent={String(likesCount)}
-				color={likedQuestions[question.id] ? "success" : "secondary"}
-				onClick={handleBadgeClick}>
-				<StyledLikeButton variant="text">
+				color={isLiked ? "success" : "secondary"}>
+				<StyledLikeButton
+					variant="text"
+					disabled={isLikeButtonDisabled}
+					onClick={handleLikeButtonClick}>
 					<ThumbUpAltIcon color="primary" fontSize="large" />
 				</StyledLikeButton>
 			</StyledBadge>

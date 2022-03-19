@@ -1,4 +1,5 @@
 import { useState, useCallback, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { addSession } from "../../Api/Session";
 import { ISession } from "../../Api/Session/interfaces";
 import { sessionsByDate } from "../../helpers";
@@ -10,6 +11,8 @@ export const useAddSession = (
 	const [loading, setLoading] = useState(false);
 	const [name, setName] = useState("");
 	const [date, setDate] = useState<Date | null>(null);
+
+	const navigate = useNavigate();
 
 	const handleClickOpen = useCallback(() => {
 		setDialogOpened(true);
@@ -47,9 +50,10 @@ export const useAddSession = (
 				});
 
 				setDialogOpened(false);
+				navigate(`/${newSessionId}`);
 			});
 		}
-	}, [date, name, setSessions]);
+	}, [date, name, navigate, setSessions]);
 
 	const handleDatePick = useCallback((newDate: Date | null) => {
 		setDate(newDate);

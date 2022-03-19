@@ -19,7 +19,6 @@ const QuestionsList = ({ session, lastJsonMessage, sendJsonMessage }: IQuestions
 	}, [session]);
 
 	useEffect(() => {
-		console.log("useEffect updateQuestions");
 		updateQuestions(stateQuestions, setQuestions, lastJsonMessage);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [lastJsonMessage]);
@@ -50,7 +49,6 @@ const QuestionsList = ({ session, lastJsonMessage, sendJsonMessage }: IQuestions
 		[sendJsonMessage, stateQuestions]
 	);
 
-	console.log("QuestionsList render", stateQuestions);
 	return (
 		<QuestionsListContainer>
 			{stateQuestions.map((question) => (
