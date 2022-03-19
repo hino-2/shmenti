@@ -33,7 +33,5 @@ export const useWebsocket = (sessionId: string) => {
 		}
 	);
 
-	console.log("lastJsonMessage", lastJsonMessage);
-
 	return { sendJsonMessage, lastJsonMessage };
 };
