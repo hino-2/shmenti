@@ -3,30 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { fetchSessionsList } from "../../Api/Session";
 import { ISession } from "../../Api/Session/interfaces";
 import {
-	CircularProgressContainer,
 	GoButton,
 	HeaderContainer,
 	HeaderText,
 	HomePageContainer,
-	RecentSessionsContainer,
-	RecentSessionsHeaderText,
-	SessionButton,
-	StyledLink,
-	StyledTextField,
+	SessionCodeInputField,
 	SubHeaderText,
 } from "./styled";
-import { CircularProgress, SpeedDialAction, Typography } from "@mui/material";
-import SpeedDial, { SpeedDialProps } from "@mui/material/SpeedDial";
-import MenuIcon from "@mui/icons-material/Menu";
-import AddIcon from "@mui/icons-material/Add";
-import HomeIcon from "@mui/icons-material/Home";
 import { AddSession } from "../ButtonAddSession";
 import { insertSpaceInTheMiddle, sessionsByDate } from "../../helpers";
-
-const actions = [
-	{ icon: <HomeIcon />, name: "home" },
-	{ icon: <AddIcon />, name: "Add" },
-];
+import { RecentSessions } from "../SessionsRecent";
 
 export const Homepage = () => {
 	const [sessions, setSessions] = useState<ISession[]>();
@@ -70,14 +56,6 @@ export const Homepage = () => {
 		[handleGoButtonClick]
 	);
 
-	// const handleSpeedDialActionClick = useCallback((name: string) => () => {
-	// 	if(name === 'home') {
-	// 		navigate('/')
-	// 	}
-
-	// 	if()
-	// }, [navigate]);
-
 	return (
 		<>
 			<HomePageContainer>
@@ -88,7 +66,7 @@ export const Homepage = () => {
 					</HeaderText>
 				</HeaderContainer>
 				<SubHeaderText>Please enter the code</SubHeaderText>
-				<StyledTextField
+				<SessionCodeInputField
 					value={sessionId}
 					autoFocus
 					margin="normal"
@@ -101,40 +79,8 @@ export const Homepage = () => {
 				<GoButton variant="outlined" onClick={handleGoButtonClick}>
 					Go
 				</GoButton>
-				<RecentSessionsContainer>
-					<RecentSessionsHeaderText>Recent sessions</RecentSessionsHeaderText>
-					{sessions ? (
-						sessions.map((session) => (
-							<StyledLink to={`${session.id}`} key={session.id}>
-								<SessionButton variant="outlined">
-									{session.name}&nbsp;
-									<Typography variant="body2" color="secondary">
-										({session.date})
-									</Typography>
-								</SessionButton>
-							</StyledLink>
-						))
-					) : (
-						<CircularProgressContainer>
-							<CircularProgress />
-						</CircularProgressContainer>
-					)}
-				</RecentSessionsContainer>
+				<RecentSessions sessions={sessions} />
 			</HomePageContainer>
-			{/* <SpeedDial
-				ariaLabel="Menu"
-				icon={<MenuIcon />}
-				direction="down"
-				sx={{ position: "absolute", right: 10, top: 10 }}>
-				{actions.map(({ name, icon }) => (
-					<SpeedDialAction
-						onClick={handleSpeedDialActionClick(name)}
-						key={name}
-						icon={icon}
-						tooltipTitle={name}
-					/>
-				))}
-			</SpeedDial> */}
 			<AddSession setSessions={setSessions} />
 		</>
 	);
