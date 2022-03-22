@@ -141,5 +141,9 @@ export const Homepage = () => {
 };
 
 const ShmentiLogo = () => (
-	<img src="https://shmenti.s3.eu-central-1.amazonaws.com/favicon.png" alt="logo" height={76} />
+	<img
+		src="https://s3.eu-central-1.amazonaws.com/www.shmenti.ru/favicon.png"
+		alt="logo"
+		height={76}
+	/>
 );
